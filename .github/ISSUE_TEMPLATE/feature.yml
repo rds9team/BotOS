@@ -1,0 +1,34 @@
+name: Feature Request / Task
+description: 開発タスク・機能追加用
+title: "[TASK] "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: role
+    attributes:
+      label: 担当領域
+      options:
+        - "web (フロントエンド)"
+        - "api (バックエンド)"
+        - "core (Bot / サンドボックス)"
+        - "plugin (プラグイン開発)"
+        - "qa (テスト / セキュリティ)"
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: 何を実装するか簡潔に書いてください
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: 完了条件 (Done Criteria)
+      description: このPR/タスクが完了したとみなす条件をチェックリスト形式で書いてください
+      placeholder: |
+        - [ ] 〇〇のエンドポイントが正常レスポンスを返すこと
+        - [ ] make check が通ること
+    validations:
+      required: true
