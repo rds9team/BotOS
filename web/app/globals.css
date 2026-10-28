@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+:root {
+  --background: #090a0c;
+  --foreground: #f3f4f6;
+  --card-bg: #111214;
+  --card-sub: #16181d;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --brand: #5865f2;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  min-height: 100vh;
+}
