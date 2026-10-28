@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   FileText,
   Sliders,
+  HelpCircle,
   ExternalLink,
 } from "lucide-react";
 
@@ -29,9 +30,10 @@ const NAV_GROUPS = [
     ],
   },
   {
-    title: "設定",
+    title: "システム",
     items: [
-      { href: "/settings", label: "サーバー設定", icon: Sliders },
+      { href: "/settings", label: "設定", icon: Sliders },
+      { href: "/help", label: "ヘルプ", icon: HelpCircle },
     ],
   },
 ];

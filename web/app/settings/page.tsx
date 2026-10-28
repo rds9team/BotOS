@@ -1,11 +1,14 @@
+import Link from "next/link";
 import {
   Cpu,
   ShieldCheck,
   Server,
   Code2,
   Database,
-  ExternalLink,
   Info,
+  Sliders,
+  Bell,
+  Lock,
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -17,11 +20,48 @@ export default function SettingsPage() {
         </h1>
       </div>
 
-      {/* システム・ランタイム詳細 */}
+      {/* サーバー一般設定 */}
       <section className="space-y-3">
-        <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
-          <Info className="w-3.5 h-3.5" />
-          <span>ランタイム & 実行エンジン詳細</span>
+        <div className="text-xs font-mono uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+          全般設定
+        </div>
+
+        <div className="rounded border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#111215] divide-y divide-neutral-100 dark:divide-neutral-800/80 text-xs">
+          <div className="flex items-center justify-between p-3.5">
+            <div className="space-y-0.5">
+              <div className="font-medium text-neutral-900 dark:text-neutral-100">コマンド自動同期</div>
+              <div className="text-[11px] text-neutral-500">プラグイン追加・編集時にDiscordのスラッシュコマンドを自動登録します</div>
+            </div>
+            <input
+              type="checkbox"
+              defaultChecked
+              className="rounded border-neutral-300 dark:border-neutral-700 text-[#5865f2] focus:ring-[#5865f2] h-4 w-4"
+            />
+          </div>
+
+          <div className="flex items-center justify-between p-3.5">
+            <div className="space-y-0.5">
+              <div className="font-medium text-neutral-900 dark:text-neutral-100">サンドボックス強制モード</div>
+              <div className="text-[11px] text-neutral-500">AST検証を通過しないコードの実行を即時遮断します</div>
+            </div>
+            <input
+              type="checkbox"
+              defaultChecked
+              disabled
+              className="rounded border-neutral-300 dark:border-neutral-700 text-emerald-500 h-4 w-4 opacity-80 cursor-not-allowed"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* 詳細 (Technical Details) */}
+      <section className="space-y-3 pt-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+            <Info className="w-3.5 h-3.5" />
+            <span>詳細（ランタイム・システム環境）</span>
+          </div>
+          <span className="text-[11px] font-mono text-neutral-400">システム情報</span>
         </div>
 
         <div className="rounded border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#111215] divide-y divide-neutral-100 dark:divide-neutral-800/80 font-mono text-xs">
@@ -78,10 +118,10 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      {/* サンドボックス制限ポリシー */}
-      <section className="space-y-3">
+      {/* サンドボックス規約 */}
+      <section className="space-y-3 pt-2">
         <div className="text-xs font-mono uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
-          AST セキュリティポリシー規約
+          詳細（AST 実行セキュリティ規約）
         </div>
 
         <div className="p-3.5 rounded border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#111215] space-y-2 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed font-mono">
@@ -95,7 +135,7 @@ export default function SettingsPage() {
           </div>
           <div className="flex items-start gap-2">
             <span className="text-[#5865f2]">•</span>
-            <span>実行タイムアウト: 500ms（無限ループおよびCPU枯渇防止）</span>
+            <span>実行タイムアウト: 500ms（無限ループ防止）</span>
           </div>
         </div>
       </section>
