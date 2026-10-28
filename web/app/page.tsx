@@ -1,100 +1,242 @@
 import Link from "next/link";
-import { Server, Cpu, Shield, ArrowRight, Code, Sparkles } from "lucide-react";
+import {
+  Terminal,
+  Activity,
+  ShieldCheck,
+  Plus,
+  Play,
+  RotateCw,
+  Clock,
+  CheckCircle2,
+  AlertTriangle,
+} from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      {/* ヒーローセクション */}
-      <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#111214] p-8 md:p-12">
-        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-96 h-96 bg-[#5865f2]/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 space-y-4 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-gray-300">
-            <Sparkles className="w-3.5 h-3.5 text-[#5865f2]" />
-            <span>次世代プラグイン型 Discord Bot プラットフォーム</span>
-          </div>
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-            BotOS <span className="text-[#5865f2]">Dashboard</span>
+    <div className="max-w-6xl mx-auto space-y-6">
+      {/* ページタイトル & アクション */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-neutral-200 dark:border-neutral-800">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+            システム概要
           </h1>
-          <p className="text-gray-400 text-sm md:text-base leading-relaxed">
-            安全なASTサンドボックスとWeb UIで、Discord Botのコマンド・イベントを動的に作成・管理できる統合コントロールパネルです。
+          <p className="text-xs text-neutral-500 mt-0.5">
+            現在接続中のギルド環境とコマンド実行エンジンの稼働状況
           </p>
-          <div className="pt-2 flex flex-wrap gap-3">
-            <Link
-              href="/servers"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5865f2] hover:bg-[#4752c4] text-white text-sm font-medium transition-all shadow-lg shadow-[#5865f2]/20 active:scale-95"
-            >
-              <Server className="w-4 h-4" />
-              <span>管理サーバーを選択</span>
-              <ArrowRight className="w-4 h-4" />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+          >
+            <RotateCw className="w-3.5 h-3.5" />
+            <span>同期</span>
+          </button>
+          <Link
+            href="/commands/new"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#5865f2] hover:bg-[#4752c4] text-white text-xs font-medium transition-colors shadow-sm"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>コマンド作成</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* メトリクスバー */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="p-3.5 rounded-lg border border-neutral-200 dark:border-neutral-800/90 bg-white dark:bg-[#111215] space-y-1">
+          <div className="flex items-center justify-between text-xs text-neutral-500">
+            <span>登録コマンド</span>
+            <Terminal className="w-3.5 h-3.5 text-neutral-400" />
+          </div>
+          <div className="text-xl font-bold font-mono text-neutral-900 dark:text-neutral-100">8</div>
+          <div className="text-[11px] text-neutral-500 flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span>同期済み: 8件</span>
+          </div>
+        </div>
+
+        <div className="p-3.5 rounded-lg border border-neutral-200 dark:border-neutral-800/90 bg-white dark:bg-[#111215] space-y-1">
+          <div className="flex items-center justify-between text-xs text-neutral-500">
+            <span>有効プラグイン</span>
+            <Activity className="w-3.5 h-3.5 text-neutral-400" />
+          </div>
+          <div className="text-xl font-bold font-mono text-neutral-900 dark:text-neutral-100">3</div>
+          <div className="text-[11px] text-neutral-500">標準: 2 / カスタム: 1</div>
+        </div>
+
+        <div className="p-3.5 rounded-lg border border-neutral-200 dark:border-neutral-800/90 bg-white dark:bg-[#111215] space-y-1">
+          <div className="flex items-center justify-between text-xs text-neutral-500">
+            <span>AST検証</span>
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+          </div>
+          <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400">100%</div>
+          <div className="text-[11px] text-neutral-500">全コード静的検査済み</div>
+        </div>
+
+        <div className="p-3.5 rounded-lg border border-neutral-200 dark:border-neutral-800/90 bg-white dark:bg-[#111215] space-y-1">
+          <div className="flex items-center justify-between text-xs text-neutral-500">
+            <span>平均実行レイテンシ</span>
+            <Clock className="w-3.5 h-3.5 text-neutral-400" />
+          </div>
+          <div className="text-xl font-bold font-mono text-neutral-900 dark:text-neutral-100">14ms</div>
+          <div className="text-[11px] text-neutral-500">FastAPI & Python 3.14</div>
+        </div>
+      </div>
+
+      {/* 2カラムレイアウト: コマンド一覧と直近の実行ログ */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* コマンド一覧テーブル */}
+        <div className="lg:col-span-2 space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-mono uppercase tracking-wider text-neutral-500">
+              登録スラッシュコマンド
+            </h2>
+            <Link href="/commands" className="text-xs text-[#5865f2] hover:underline">
+              すべて表示
             </Link>
-            <Link
-              href="/plugins"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#16181d] hover:bg-white/5 border border-white/10 text-gray-300 hover:text-white text-sm font-medium transition-all"
-            >
-              <Code className="w-4 h-4" />
-              <span>プラグイン一覧を見る</span>
-            </Link>
           </div>
-        </div>
-      </section>
 
-      {/* ステータスカードグリッド */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="p-6 rounded-xl border border-white/10 bg-[#111214] space-y-2">
-          <div className="flex items-center justify-between text-gray-400">
-            <span className="text-sm font-medium">参加サーバー数</span>
-            <Server className="w-5 h-5 text-gray-500" />
+          <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#111215] overflow-hidden">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/40 text-neutral-500 font-mono">
+                  <th className="py-2.5 px-3.5 font-normal">コマンド名</th>
+                  <th className="py-2.5 px-3.5 font-normal">種別</th>
+                  <th className="py-2.5 px-3.5 font-normal">プラグイン</th>
+                  <th className="py-2.5 px-3.5 font-normal">状態</th>
+                  <th className="py-2.5 px-3.5 font-normal text-right">アクション</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800 font-mono">
+                <tr className="hover:bg-neutral-50 dark:hover:bg-neutral-900/20 transition-colors">
+                  <td className="py-2.5 px-3.5 font-medium text-neutral-900 dark:text-neutral-100">
+                    /omikuji
+                  </td>
+                  <td className="py-2.5 px-3.5 text-neutral-500">標準コマンド</td>
+                  <td className="py-2.5 px-3.5 text-neutral-600 dark:text-neutral-400">fortune</td>
+                  <td className="py-2.5 px-3.5">
+                    <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400">
+                      <CheckCircle2 className="w-3 h-3" /> 有効
+                    </span>
+                  </td>
+                  <td className="py-2.5 px-3.5 text-right">
+                    <button type="button" className="text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200">
+                      <Play className="w-3 h-3 inline" />
+                    </button>
+                  </td>
+                </tr>
+
+                <tr className="hover:bg-neutral-50 dark:hover:bg-neutral-900/20 transition-colors">
+                  <td className="py-2.5 px-3.5 font-medium text-neutral-900 dark:text-neutral-100">
+                    /dice [sides]
+                  </td>
+                  <td className="py-2.5 px-3.5 text-neutral-500">標準コマンド</td>
+                  <td className="py-2.5 px-3.5 text-neutral-600 dark:text-neutral-400">dice-roller</td>
+                  <td className="py-2.5 px-3.5">
+                    <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400">
+                      <CheckCircle2 className="w-3 h-3" /> 有効
+                    </span>
+                  </td>
+                  <td className="py-2.5 px-3.5 text-right">
+                    <button type="button" className="text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200">
+                      <Play className="w-3 h-3 inline" />
+                    </button>
+                  </td>
+                </tr>
+
+                <tr className="hover:bg-neutral-50 dark:hover:bg-neutral-900/20 transition-colors">
+                  <td className="py-2.5 px-3.5 font-medium text-neutral-900 dark:text-neutral-100">
+                    /welcome_config
+                  </td>
+                  <td className="py-2.5 px-3.5 text-neutral-500">イベント駆動</td>
+                  <td className="py-2.5 px-3.5 text-neutral-600 dark:text-neutral-400">welcome-bot</td>
+                  <td className="py-2.5 px-3.5">
+                    <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400">
+                      <CheckCircle2 className="w-3 h-3" /> 有効
+                    </span>
+                  </td>
+                  <td className="py-2.5 px-3.5 text-right">
+                    <button type="button" className="text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200">
+                      <Play className="w-3 h-3 inline" />
+                    </button>
+                  </td>
+                </tr>
+
+                <tr className="hover:bg-neutral-50 dark:hover:bg-neutral-900/20 transition-colors">
+                  <td className="py-2.5 px-3.5 font-medium text-neutral-900 dark:text-neutral-100">
+                    /custom_echo
+                  </td>
+                  <td className="py-2.5 px-3.5 text-neutral-500">スクリプト</td>
+                  <td className="py-2.5 px-3.5 text-neutral-600 dark:text-neutral-400">user-script</td>
+                  <td className="py-2.5 px-3.5">
+                    <span className="inline-flex items-center gap-1 text-[11px] text-amber-600 dark:text-amber-400">
+                      <AlertTriangle className="w-3 h-3" /> レビュー中
+                    </span>
+                  </td>
+                  <td className="py-2.5 px-3.5 text-right">
+                    <button type="button" className="text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200">
+                      <Play className="w-3 h-3 inline" />
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <p className="text-2xl font-bold text-white font-mono">--</p>
-          <p className="text-xs text-gray-500">ログイン後に同期されます</p>
         </div>
 
-        <div className="p-6 rounded-xl border border-white/10 bg-[#111214] space-y-2">
-          <div className="flex items-center justify-between text-gray-400">
-            <span className="text-sm font-medium">有効プラグイン</span>
-            <Cpu className="w-5 h-5 text-gray-500" />
+        {/* 右カラム: ASTセキュリティ監査ログ */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-mono uppercase tracking-wider text-neutral-500">
+              AST 検査ログ
+            </h2>
+            <span className="text-[11px] font-mono text-neutral-500">リアルタイム</span>
           </div>
-          <p className="text-2xl font-bold text-white font-mono">0</p>
-          <p className="text-xs text-gray-500">標準コマンドプラグイン利用可能</p>
-        </div>
 
-        <div className="p-6 rounded-xl border border-white/10 bg-[#111214] space-y-2">
-          <div className="flex items-center justify-between text-gray-400">
-            <span className="text-sm font-medium">サンドボックス保護</span>
-            <Shield className="w-5 h-5 text-emerald-500" />
-          </div>
-          <p className="text-2xl font-bold text-emerald-400 font-mono">AST Shield</p>
-          <p className="text-xs text-gray-500">危険な組み込み関数・属性アクセスを遮断</p>
-        </div>
-      </section>
+          <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#111215] p-3.5 space-y-3 font-mono text-[11px]">
+            <div className="space-y-1 pb-2.5 border-b border-neutral-100 dark:border-neutral-800/80">
+              <div className="flex items-center justify-between text-neutral-500 text-[10px]">
+                <span>20:34:12</span>
+                <span className="text-emerald-500">PASSED</span>
+              </div>
+              <div className="text-neutral-800 dark:text-neutral-200">
+                plugin:fortune AST validation
+              </div>
+              <div className="text-neutral-500 text-[10px]">
+                Disallowed nodes: 0, Imports: safe
+              </div>
+            </div>
 
-      {/* クイックガイドセクション */}
-      <section className="rounded-xl border border-white/10 bg-[#111214] p-6 space-y-4">
-        <h2 className="text-lg font-semibold text-white">クイックスタート</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-          <div className="p-4 rounded-lg bg-[#16181d] border border-white/5 space-y-2">
-            <div className="font-mono text-xs text-[#5865f2]">STEP 01</div>
-            <div className="font-medium text-white">Discord 認証</div>
-            <p className="text-xs text-gray-400">
-              右上のログインボタンから Discord アカウントで認証し、管理権限を持つサーバーを読み込みます。
-            </p>
-          </div>
-          <div className="p-4 rounded-lg bg-[#16181d] border border-white/5 space-y-2">
-            <div className="font-mono text-xs text-[#5865f2]">STEP 02</div>
-            <div className="font-medium text-white">サーバー設定</div>
-            <p className="text-xs text-gray-400">
-              BotOS を導入したいサーバーを選択し、使用するプラグインやコマンドの有効/無効を切り替えます。
-            </p>
-          </div>
-          <div className="p-4 rounded-lg bg-[#16181d] border border-white/5 space-y-2">
-            <div className="font-mono text-xs text-[#5865f2]">STEP 03</div>
-            <div className="font-medium text-white">カスタム拡張</div>
-            <p className="text-xs text-gray-400">
-              AST サンドボックス上で動作する Python プラグインを作成し、サーバー専用の機能を即時デプロイできます。
-            </p>
+            <div className="space-y-1 pb-2.5 border-b border-neutral-100 dark:border-neutral-800/80">
+              <div className="flex items-center justify-between text-neutral-500 text-[10px]">
+                <span>20:31:05</span>
+                <span className="text-emerald-500">PASSED</span>
+              </div>
+              <div className="text-neutral-800 dark:text-neutral-200">
+                plugin:dice-roller AST validation
+              </div>
+              <div className="text-neutral-500 text-[10px]">
+                Disallowed nodes: 0, Imports: safe
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-neutral-500 text-[10px]">
+                <span>20:28:44</span>
+                <span className="text-amber-500">BLOCKED</span>
+              </div>
+              <div className="text-neutral-800 dark:text-neutral-200">
+                sandbox: attempt eval() call
+              </div>
+              <div className="text-neutral-500 text-[10px]">
+                Rule: dangerous_builtin_intercepted
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

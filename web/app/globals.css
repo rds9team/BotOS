@@ -1,16 +1,28 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
+  --background: #fbfbfb;
+  --foreground: #121212;
+  --panel: #ffffff;
+  --panel-muted: #f4f4f5;
+  --border: #e4e4e7;
+  --accent: #5865f2;
+}
+
+.dark {
   --background: #090a0c;
-  --foreground: #f3f4f6;
-  --card-bg: #111214;
-  --card-sub: #16181d;
-  --border-color: rgba(255, 255, 255, 0.08);
-  --brand: #5865f2;
+  --foreground: #f4f4f5;
+  --panel: #111215;
+  --panel-muted: #16181d;
+  --border: rgba(255, 255, 255, 0.08);
+  --accent: #5865f2;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
   min-height: 100vh;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
