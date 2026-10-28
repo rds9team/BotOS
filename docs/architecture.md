@@ -37,8 +37,8 @@ BotOSは以下の3つの主要コンポーネントで構成される。
 ### 2.1 プラグイン保存・同期フロー
 1. 管理者がWebパネル上でBlocklyブロックを配置、またはコードを記述。
 2. Webパネルから `POST /api/guilds/{guild_id}/plugins/{plugin_id}` へJSON定義を送信。
-3. API GatewayがDBへ保存し、Core Engineへ「同期要求イベント」を発行。
-4. Core Engineが対象ギルドのコマンド総数を算出（上限30件チェック）。
+3. API GatewayがDBへ保存し、Core Engineへ内部通信（Redis / IPC）経由で「同期要求イベント」を発行。
+4. Core Engineが対象ギルドのコマンド総数を算出（標準上限30件チェック）。
 5. Core EngineがDiscord APIに対してギルドコマンド同期 (`bot.tree.sync(guild=...)`) を実行。
 6. 完了結果（成功/失敗）をWebSocket経由でWebパネルへ即座に通知。
 

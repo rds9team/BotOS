@@ -22,12 +22,13 @@ BotOSが導入されているDiscordサーバー。
 作成・公開されたプラグイン。
 - `id` (VARCHAR(64), PK): プラグインID (例: `com.user.mod`)
 - `name` (VARCHAR(100)): プラグイン名
+- `version` (VARCHAR(20), DEFAULT '1.0.0'): プラグインのセマンティックバージョン
 - `description` (TEXT): 説明文
-- `author_id` (UUID, FK -> users.id): 作成者
-- `type` (VARCHAR(20)): `blockly` | `python` | `nodejs`
+- `author_id` (UUID, FK -> users.id): 作成者のユーザーID
+- `type` (VARCHAR(20)): プラグイン種別 (`blockly` | `python`)
 - `is_public` (BOOLEAN, DEFAULT FALSE): 公開フラグ
-- `manifest` (JSON): コマンド定義、権限、設定スキーマ
-- `content` (JSON): Blocklyワークスペースデータまたはコード本文
+- `manifest` (JSON): コマンド定義、必要権限、イベントフック、設定スキーマ
+- `content` (JSON): Blocklyワークスペースデータまたはコード本文・エントリポイント定義
 - `created_at` (TIMESTAMP)
 - `updated_at` (TIMESTAMP)
 

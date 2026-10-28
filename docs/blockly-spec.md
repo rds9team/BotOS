@@ -34,5 +34,5 @@ Google Blocklyを活用し、Scratchライクな操作感でDiscord Botのロジ
 
 ## 2. ワークスペースの保存とコード生成
 
-- **保存形式:** Blocklyのワークスペース状態（ブロック配置、座標、接続情報）をJSONオブジェクトとして `.botos.json` の `workspace` フィールドにそのまま保存。
-- **コードジェネレータ:** Webパネル上でBlockly JavaScript/Pythonジェネレータを実行し、サンドボックス互換の安全な実行スクリプトを自動生成する。
+- **保存形式:** Blocklyのワークスペース状態（ブロック配置、座標、接続情報）をJSONオブジェクトとして `.botos.json` の `entrypoint.workspace` フィールドに保存（データベース上は `plugins.content` テーブルに格納）。
+- **コードジェネレータ:** Webパネル上でBlockly Pythonジェネレータを実行し、サンドボックス互換の安全な実行スクリプト（ラッパーオブジェクトを介した処理）を自動生成する（MVPはPythonコード生成を標準とし、将来的に他ランタイムへ拡張）。

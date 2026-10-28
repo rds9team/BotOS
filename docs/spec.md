@@ -100,33 +100,45 @@ Unloaded
 
 # 5. プラグイン仕様
 
-プラグインはBotOS専用のmanifestを持つ。
+プラグインはBotOS専用のmanifestを持つ。Web定義型（Blockly）および配布型（Pythonコード）の双方で共通の統一フォーマット（`botos.plugin.json` または `.botos.json`）を採用する。
 
-例:
+例（Pythonコードプラグインの場合）:
 
 ```json
 {
   "id": "example.moderation",
   "name": "Moderation",
   "version": "1.0.0",
-  "author": "example",
+  "author_id": "00000000-0000-0000-0000-000000000000",
   "description": "Moderation commands for Discord.",
-  "main": "plugin.py",
+  "type": "python",
+  "entrypoint": {
+    "engine": "python",
+    "file": "plugin.py",
+    "class": "Plugin"
+  },
   "botos_version": ">=1.0.0",
   "permissions": [
-    "discord.moderation"
+    "kick_members",
+    "ban_members"
+  ],
+  "events": [
+    "on_member_join"
   ]
 }
 ```
+
+※ Web定義型（Blockly）プラグインの場合は、`type` が `"blockly"` となり、`entrypoint.workspace` にブロックデータが格納される（詳細は [plugin-draft.md](file:///home/yuto0926space/botos/docs/plugin-draft.md) 参照）。
 
 ## 必須項目
 
 - `id`
 - `name`
 - `version`
-- `author`
+- `author_id`
 - `description`
-- `main`
+- `type` (`blockly` | `python`)
+- `entrypoint`
 - `botos_version`
 
 ## 推奨項目
@@ -136,6 +148,8 @@ Unloaded
 - `license`
 - `dependencies`
 - `permissions`
+- `commands`
+- `events`
 - `config_schema`
 
 ---
@@ -177,26 +191,25 @@ bot.send_message(...)
 
 # 7. Event System
 
-BotOS Coreからプラグインへイベントを送信する。
+BotOS Coreからプラグインへイベントを送信する。イベント名は discord.py 準拠の命名に統一する。
 
 例:
 
 ```text
-guild_join
-guild_remove
-message_create
-member_join
-member_leave
-interaction
-command
-plugin_enable
-plugin_disable
+on_guild_join
+on_guild_remove
+on_message
+on_member_join
+on_member_remove
+on_interaction
+on_plugin_enable
+on_plugin_disable
 ```
 
 プラグイン側:
 
 ```python
-@event("member_join")
+@event("on_member_join")
 async def on_member_join(member):
     ...
 ```
@@ -346,13 +359,16 @@ User
 
 ## Plugin Permission
 
+プラグインはDiscord標準の権限名に準拠してmanifestで必要権限を宣言する。
+
 例:
 
 ```text
-discord.send_message
-discord.manage_channels
-discord.manage_roles
-discord.moderation
+send_messages
+manage_channels
+manage_roles
+kick_members
+ban_members
 ```
 
 プラグインはmanifestで必要権限を宣言する。
@@ -362,9 +378,9 @@ discord.moderation
 ```text
 このプラグインは以下の権限を要求しています。
 
-✓ メッセージ送信
-✓ チャンネル管理
-✗ ロール管理
+✓ メッセージ送信 (send_messages)
+✓ チャンネル管理 (manage_channels)
+✗ ロール管理 (manage_roles)
 
 [Install]
 ```
@@ -448,83 +464,75 @@ verified
 
 # 16. Database
 
-最低限以下のデータを管理する。
+データベーススキーマの詳細設計は [database-schema.md](file:///home/yuto0926space/botos/docs/database-schema.md) を正本とする。
+以下に主要テーブル構造の概要を示す。
 
-## Users
+## users
+- `id` (UUID, PK)
+- `discord_id` (VARCHAR(32), UNIQUE)
+- `username` (VARCHAR(100))
+- `created_at` (TIMESTAMP)
 
-```text
-id
-discord_id
-username
-created_at
-```
+## guilds
+- `id` (VARCHAR(32), PK): Discord Guild ID
+- `name` (VARCHAR(100))
+- `icon_url` (TEXT)
+- `max_commands` (INT, DEFAULT 30)
+- `created_at` (TIMESTAMP)
 
-## Servers
+## plugins
+- `id` (VARCHAR(64), PK): プラグインID
+- `name` (VARCHAR(100))
+- `version` (VARCHAR(20))
+- `author_id` (UUID, FK -> users.id)
+- `description` (TEXT)
+- `type` (VARCHAR(20)): `blockly` | `python`
+- `is_public` (BOOLEAN)
+- `manifest` (JSON)
+- `content` (JSON)
+- `created_at` (TIMESTAMP)
 
-```text
-id
-discord_guild_id
-name
-owner_id
-created_at
-```
+## guild_plugins
+- `id` (UUID, PK)
+- `guild_id` (VARCHAR(32), FK -> guilds.id)
+- `plugin_id` (VARCHAR(64), FK -> plugins.id)
+- `is_enabled` (BOOLEAN, DEFAULT TRUE)
+- `config` (JSON)
+- `installed_at` (TIMESTAMP)
 
-## Plugins
-
-```text
-id
-name
-version
-author
-repository
-description
-status
-created_at
-```
-
-## InstalledPlugins
-
-```text
-id
-server_id
-plugin_id
-version
-enabled
-installed_at
-```
-
-## PluginConfigs
-
-```text
-id
-server_id
-plugin_id
-config
-updated_at
-```
+## command_quota_requests
+- `id` (UUID, PK)
+- `guild_id` (VARCHAR(32), FK -> guilds.id)
+- `requested_by` (UUID, FK -> users.id)
+- `requested_quota` (INT)
+- `reason` (TEXT)
+- `status` (VARCHAR(20))
+- `created_at` (TIMESTAMP)
 
 ---
 
 # 17. API
 
-Web UIとBotOS Core間のAPIを用意する。
+Web UIとAPI Gateway / BotOS Core間のエンドポイント設計。用語はDiscord公式準拠の `guilds` に統一する。
 
 例:
 
 ```text
-GET    /api/servers
-GET    /api/servers/:id/plugins
+GET    /api/guilds
+GET    /api/guilds/:guild_id/plugins
 
 GET    /api/plugins
 GET    /api/plugins/:id
 
-POST   /api/servers/:id/plugins/:plugin/install
-POST   /api/servers/:id/plugins/:plugin/enable
-POST   /api/servers/:id/plugins/:plugin/disable
-DELETE /api/servers/:id/plugins/:plugin
+POST   /api/guilds/:guild_id/plugins/:plugin_id/install
+POST   /api/guilds/:guild_id/plugins/:plugin_id/enable
+POST   /api/guilds/:guild_id/plugins/:plugin_id/disable
+DELETE /api/guilds/:guild_id/plugins/:plugin_id
 
-GET    /api/servers/:id/plugins/:plugin/config
-PUT    /api/servers/:id/plugins/:plugin/config
+GET    /api/guilds/:guild_id/plugins/:plugin_id/config
+PUT    /api/guilds/:guild_id/plugins/:plugin_id/config
+
+POST   /api/guilds/:guild_id/sync
 ```
 
 認証済みユーザー以外はアクセスできないようにする。
@@ -555,19 +563,16 @@ MVPでは最低限、
 
 プラグインは基本的に**信頼できないコードとして扱う**。
 
-理想的には将来的に、
-
 ```text
 BotOS Core
    │
-   ├── Sandbox Plugin A
-   ├── Sandbox Plugin B
-   └── Sandbox Plugin C
+   ├── Sandbox Runner (制限コンテキスト / AST検証)
+   │     ├── Plugin A (Blockly生成コード)
+   │     └── Plugin B (Pythonスクリプト)
 ```
 
-のような隔離環境を検討する。
-
-MVPでは完全なSandbox実装を必須にしないが、Plugin APIを設計する段階から「Coreへの直接アクセスを避ける」構造にする。
+- **MVP (フェーズ1):** AST検証＋非同期タイムアウト（最大3.0秒）＋安全なラッパーオブジェクトへのアクセス制限を行い、生 `discord.py` や危険な標準ライブラリ（`os`, `subprocess` 等）への直接アクセスを遮断する。
+- **製品版 (フェーズ2):** cgroupsやコンテナによるメモリ（最大64MB）/CPUリソース制限および完全プロセス隔離を導入する（詳細は [sandbox-spec.md](file:///home/yuto0926space/botos/docs/sandbox-spec.md) 参照）。
 
 ---
 
@@ -669,8 +674,8 @@ MVPでは実装しなくてよい。
 
 ### Plugin Marketplace
 
-- 有料Plugin
-- 作者への収益還元
+- MVP・初期フェーズは完全無料でプラグイン共有を提供。
+- 将来フェーズにおいて、有料プラグイン・作者への収益還元・Proプラン専用機能等を検討。
 - ダウンロード数
 - レビュー
 - ランキング

@@ -51,3 +51,7 @@ data/
 # Logs & temp
 logs/
 *.log
+
+# Work notes & fix drafts
+fix/
+

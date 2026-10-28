@@ -9,10 +9,10 @@ Webパネル上でモジュールを組み合わせ、自分専用のカスタ�
 ### Webパネル
 - **プラグイン導入・管理**: ストアや自作プラグインから選択してサーバーへ導入可能
 - **ビジュアルプログラミング (Blockly / Scratch形式)**: ノードやブロックを組み立ててノーコードでコマンドやイベント処理を作成
-- **コード編集 (Python / Node.js)**: 専用の安全なラッパーオブジェクトを用いたローコード開発に対応
+- **コード編集 (Python)**: 専用の安全なラッパーオブジェクトを用いたローコード開発に対応（MVPはPython/discord.pyを対象とし、他言語は将来検討）
 - **サンドボックス実行**: 危険なシステムコールや不正アクセスを防止した隔離環境での動作
 - **JSON形式での入出力**: 作成したプラグインはJSON形式でインポート・エクスポート可能
-- **マーケットプレイス**: 作成したプラグインをパブリックに共有可能（完全無料）
+- **マーケットプレイス**: 作成したプラグインをパブリックに共有可能（初期MVPは完全無料）
 - **公開範囲設定**: プライベート / パブリックの切り替え
 - **ログ・デバッグ機能**: 実行エラーや動作ログをパネル上で確認可能
 
@@ -23,30 +23,33 @@ Webパネル上でモジュールを組み合わせ、自分専用のカスタ�
 ## アーキテクチャ
 
 ```text
-                     +------------------+
-                     |   BotOS Web UI   |
-                     |                  |
-                     | Blockly / Editor |
-                     | Plugin Store     |
-                     | Server Settings  |
-                     +--------+---------+
-                              |
-                              | REST / WebSocket
-                              |
-                              v
-+---------------+    +------------------+
-|    Discord    |<-->|   BotOS Core     |
-+---------------+    |                  |
-                     | Sandbox Engine   |
-                     | Guild Sync       |
-                     | Plugin Manager   |
-                     +--------+---------+
-                              |
-               +--------------+--------------+
-               |              |              |
-               v              v              v
-          Plugin A       Plugin B       Plugin C
-          (Blockly)      (Python)       (Marketplace)
+                     +---------------------------------------+
+                     |             BotOS Web UI              |
+                     |  - Blockly (ノーコード) / Monaco Editor |
+                     |  - Plugin Store / Dashboard           |
+                     +-------------------+-------------------+
+                                         |
+                                         | REST / WebSocket
+                                         v
+                     +---------------------------------------+
+                     |           BotOS API Gateway           |
+                     |  - FastAPI (OAuth2 / 認可 / プラグイン管理) |
+                     +-------------------+-------------------+
+                                         |
+                                         | Redis Pub/Sub or IPC
+                                         v
++---------------+    +---------------------------------------+
+|    Discord    |<-->|              BotOS Core               |
++---------------+    |  - discord.py (Gateway 接続)          |
+                     |  - Sandbox Runner (制限コンテキスト実行) |
+                     |  - Dynamic Guild Sync (30コマンド制限)  |
+                     +-------------------+-------------------+
+                                         |
+                          +--------------+--------------+
+                          |              |              |
+                          v              v              v
+                     Plugin A       Plugin B       Plugin C
+                     (Blockly)      (Python)       (Store)
 ```
 
 ## プラグイン形式 (`.botos.json`)
@@ -59,26 +62,38 @@ Webパネル上でモジュールを組み合わせ、自分専用のカスタ�
   "name": "Custom Welcome",
   "version": "1.0.0",
   "type": "blockly",
-  "author": "user_id",
+  "author_id": "00000000-0000-0000-0000-000000000000",
   "is_public": false,
+  "entrypoint": {
+    "engine": "blockly",
+    "workspace": {},
+    "generated_code": ""
+  },
+  "permissions": [
+    "send_messages"
+  ],
   "commands": [
     {
       "name": "hello",
       "description": "あいさつを返します"
     }
   ],
-  "workspace": {},
-  "config": {}
+  "events": [
+    "on_member_join"
+  ],
+  "config_schema": {}
 }
 ```
 
 ## ディレクトリ構成
 
+※ 現在リポジトリは初期設計段階（docs/）であり、以下の構成で順次実装予定です。
+
 ```text
 BotOS/
-├── core/       # Discord Bot本体、サンドボックス、ギルド同期エンジン
-├── api/        # Webパネル向けバックエンドAPI
-├── web/        # ダッシュボード・エディタ（Blockly / WebUI）
-├── plugins/    # 標準プラグイン
+├── core/       # Discord Bot本体、サンドボックス、ギルド同期エンジン (予定)
+├── api/        # Webパネル向けバックエンドAPI (FastAPI) (予定)
+├── web/        # ダッシュボード・エディタ（Next.js / Blockly） (予定)
+├── plugins/    # 標準プラグイン (予定)
 └── docs/       # 仕様書・設計ドキュメント
 ```
