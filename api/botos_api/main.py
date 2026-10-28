@@ -2,15 +2,27 @@
 
 from __future__ import annotations
 
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
-from sqlalchemy.ext.asyncio import AsyncEngine
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from sqlalchemy.engine import make_url
 
 from botos_api.db.models import Base
-from botos_api.db.session import get_engine
+from botos_api.db.session import dispose_engine, get_engine
 from botos_api.routes import guilds, health
+
+
+def _ensure_sqlite_parent_dir(database_url: str) -> None:
+    url = make_url(database_url)
+    if not url.drivername.startswith("sqlite"):
+        return
+    database = url.database
+    if not database or database == ":memory:":
+        return
+    Path(database).expanduser().parent.mkdir(parents=True, exist_ok=True)
 
 
 @asynccontextmanager
@@ -18,20 +30,32 @@ async def lifespan(app: FastAPI):
     from botos_api.config import load_settings
 
     settings = load_settings()
-    if settings.database_url.startswith("sqlite"):
-        # Ensure parent dir exists for file-based SQLite (see `.env.example`).
-        path_part = settings.database_url.split("///", 1)[-1]
-        if path_part and path_part != ":memory:":
-            Path(path_part).parent.mkdir(parents=True, exist_ok=True)
+    _ensure_sqlite_parent_dir(settings.database_url)
 
-    engine: AsyncEngine = get_engine()
+    health.set_started_at(time.time())
+
+    engine = get_engine()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
+    await dispose_engine()
 
 
 def create_app() -> FastAPI:
     app = FastAPI(title="BotOS API", version="0.0.0", lifespan=lifespan)
+
+    @app.middleware("http")
+    async def security_headers(request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "no-referrer"
+        return response
+
+    @app.exception_handler(ValueError)
+    async def value_error_handler(_request: Request, exc: ValueError) -> JSONResponse:
+        return JSONResponse(status_code=400, content={"detail": str(exc)})
+
     app.include_router(health.router)
     app.include_router(guilds.router)
     return app
@@ -50,7 +74,7 @@ def main() -> None:
         "botos_api.main:app",
         host=settings.botos_host,
         port=settings.botos_port,
-        reload=True,
+        reload=settings.botos_reload,
     )
 
 

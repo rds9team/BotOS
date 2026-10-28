@@ -1,4 +1,14 @@
-from botos_api.db.models import Base, Guild, GuildPlugin, Plugin, User
-from botos_api.db.session import get_engine, get_session
+from botos_api.db.models import Base, CommandQuotaRequest, Guild, GuildPlugin, Plugin, User
+from botos_api.db.session import dispose_engine, get_engine, get_session
 
-__all__ = ["Base", "Guild", "GuildPlugin", "Plugin", "User", "get_engine", "get_session"]
+__all__ = [
+    "Base",
+    "CommandQuotaRequest",
+    "Guild",
+    "GuildPlugin",
+    "Plugin",
+    "User",
+    "dispose_engine",
+    "get_engine",
+    "get_session",
+]
