@@ -1,0 +1,23 @@
+{
+  "$schema": "https://botos.rds9.net/schemas/plugin.v1.json",
+  "id": "botos.standard.ping",
+  "name": "Ping",
+  "version": "0.1.0",
+  "description": "BotOS plugin system smoke test",
+  "type": "blockly",
+  "is_public": true,
+  "entrypoint": {
+    "engine": "blockly",
+    "workspace": {},
+    "generated_code": ""
+  },
+  "permissions": [],
+  "commands": [
+    {
+      "name": "ping",
+      "description": "応答確認"
+    }
+  ],
+  "events": [],
+  "config_schema": {}
+}

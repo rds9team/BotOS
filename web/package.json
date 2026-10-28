@@ -1,0 +1,9 @@
+{
+  "name": "botos-web",
+  "private": true,
+  "version": "0.0.0",
+  "description": "BotOS dashboard — scaffold only. Run `npx create-next-app@latest .` when starting UI work.",
+  "scripts": {
+    "dev": "echo 'Web UI not scaffolded. See README.md' && exit 1"
+  }
+}

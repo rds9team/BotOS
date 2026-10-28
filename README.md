@@ -87,13 +87,18 @@ Webパネル上でモジュールを組み合わせ、自分専用のカスタ�
 
 ## ディレクトリ構成
 
-※ 現在リポジトリは初期設計段階（docs/）であり、以下の構成で順次実装予定です。
-
 ```text
 BotOS/
-├── core/       # Discord Bot本体、サンドボックス、ギルド同期エンジン (予定)
-├── api/        # Webパネル向けバックエンドAPI (FastAPI) (予定)
-├── web/        # ダッシュボード・エディタ（Next.js / Blockly） (予定)
-├── plugins/    # 標準プラグイン (予定)
-└── docs/       # 仕様書・設計ドキュメント
+├── core/       # Discord Bot本体、サンドボックス、ギルド同期エンジン
+├── api/        # Webパネル向けバックエンドAPI (FastAPI)
+├── web/        # ダッシュボード・エディタ（Next.js — 骨組みのみ）
+├── plugins/    # 標準プラグイン
+├── scripts/    # ローカル起動
+├── docs/       # 仕様書・設計ドキュメント
+├── CONTRIBUTING.md
+└── Makefile    # make api / make core / make check
 ```
+
+`core/` / `api/` / `plugins/` は骨組み実装済み。`web/` は [web/README.md](web/README.md) の手順で Next.js を追加する。
+
+ローカル開発は [docs/DEV.md](docs/DEV.md) と [CONTRIBUTING.md](CONTRIBUTING.md) を参照。
