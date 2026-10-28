@@ -71,24 +71,13 @@ export function Sidebar() {
         ))}
       </div>
 
-      <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800/80 space-y-2">
-        <div className="p-2.5 rounded-md bg-white dark:bg-[#111215] border border-neutral-200 dark:border-neutral-800 text-[11px] space-y-1">
-          <div className="flex items-center justify-between text-neutral-500">
-            <span>実行エンジン</span>
-            <span className="font-mono text-emerald-600 dark:text-emerald-400">v0.1.0</span>
-          </div>
-          <div className="flex items-center justify-between text-neutral-500">
-            <span>AST Guard</span>
-            <span className="font-mono text-neutral-700 dark:text-neutral-300">Enforced</span>
-          </div>
-        </div>
-
+      <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800/80">
         <Link
           href="https://github.com/rds9team/BotOS"
           target="_blank"
-          className="flex items-center justify-between px-2.5 py-1.5 text-[11px] text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300 transition-colors"
+          className="flex items-center justify-between px-2.5 py-1.5 text-[11px] text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors"
         >
-          <span>リポジトリ</span>
+          <span>GitHub</span>
           <ExternalLink className="w-3 h-3" />
         </Link>
       </div>
