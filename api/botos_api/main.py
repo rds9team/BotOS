@@ -10,6 +10,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.engine import make_url
 
+from botos_api.auth import router as auth_router
 from botos_api.db.models import Base
 from botos_api.db.session import dispose_engine, get_engine
 from botos_api.routes import guilds, health
@@ -37,6 +38,15 @@ async def lifespan(app: FastAPI):
     engine = get_engine()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    from sqlalchemy.ext.asyncio import async_sessionmaker
+
+    from botos_api.services.plugin_catalog import sync_standard_plugins_to_db
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    async with session_factory() as session:
+        await sync_standard_plugins_to_db(session)
+
     yield
     await dispose_engine()
 
@@ -57,6 +67,7 @@ def create_app() -> FastAPI:
         return JSONResponse(status_code=400, content={"detail": str(exc)})
 
     app.include_router(health.router)
+    app.include_router(auth_router)
     app.include_router(guilds.router)
     return app
 

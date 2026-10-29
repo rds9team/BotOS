@@ -18,6 +18,10 @@ class ApiSettings(BaseSettings):
     botos_reload: bool = False
     database_url: str = "sqlite+aiosqlite:///data/botos.db"
     jwt_secret: str = Field(default="replace_this_with_a_secure_random_key_32chars", min_length=16)
+    discord_client_id: str = ""
+    discord_client_secret: str = ""
+    discord_redirect_uri: str = "http://localhost:8000/api/auth/discord/callback"
+    jwt_expires_minutes: int = Field(default=60 * 24 * 7, ge=5, le=60 * 24 * 30)
 
     @field_validator("database_url")
     @classmethod

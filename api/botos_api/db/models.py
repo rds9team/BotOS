@@ -36,6 +36,15 @@ class User(Base):
     )
 
 
+class UserOAuthToken(Base):
+    __tablename__ = "user_oauth_tokens"
+
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), primary_key=True)
+    access_token: Mapped[str] = mapped_column(Text)
+    refresh_token: Mapped[str | None] = mapped_column(Text, nullable=True)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
 class Guild(Base):
     __tablename__ = "guilds"
 
@@ -81,6 +90,16 @@ class GuildPlugin(Base):
     is_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     config: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
     installed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )
+
+
+class GuildSyncRequest(Base):
+    __tablename__ = "guild_sync_requests"
+
+    guild_id: Mapped[str] = mapped_column(String(32), ForeignKey("guilds.id"), primary_key=True)
+    requested_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
     )
