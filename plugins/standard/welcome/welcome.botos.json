@@ -1,0 +1,31 @@
+{
+  "$schema": "https://botos.rds9.net/schemas/plugin.v1.json",
+  "id": "botos.standard.welcome",
+  "name": "Welcome",
+  "version": "0.1.0",
+  "description": "メンバー参加時にウェルカムメッセージを送るイベント型標準プラグイン",
+  "type": "blockly",
+  "is_public": true,
+  "entrypoint": {
+    "engine": "blockly",
+    "workspace": {},
+    "generated_code": "async def on_member_join(ctx):\n    data = ctx.member.get('name') if isinstance(ctx.member, dict) else getattr(ctx.member, 'name', 'unknown')\n    name = str(data or 'unknown')\n    message = str(ctx.config.get('message', 'ようこそ! {user} さん') or 'ようこそ! {user} さん')\n    channel_id = str(ctx.config.get('channel_id', '') or '')\n    await ctx.send_to_channel(channel_id, message.replace('{user}', name))\n"
+  },
+  "permissions": [],
+  "commands": [],
+  "events": [
+    "on_member_join"
+  ],
+  "config_schema": {
+    "channel_id": {
+      "type": "string",
+      "label": "送信先チャンネルID",
+      "required": true
+    },
+    "message": {
+      "type": "string",
+      "label": "ウェルカムメッセージ",
+      "required": false
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://botos.rds9.net/schemas/plugin.v1.json",
+  "id": "botos.standard.fortune",
+  "name": "Fortune",
+  "version": "0.1.0",
+  "description": "今日の運勢をおみくじで引く標準プラグイン",
+  "type": "blockly",
+  "is_public": true,
+  "entrypoint": {
+    "engine": "blockly",
+    "workspace": {},
+    "generated_code": "import random\n\nFORTUNES = ['大吉', '吉', '中吉', '小吉', '凶', '大凶']\nasync def on_command_fortune(ctx):\n    r = random.randint(0, len(FORTUNES) - 1)\n    await ctx.reply(FORTUNES[r], ephemeral=True)\n"
+  },
+  "permissions": [],
+  "commands": [
+    {
+      "name": "fortune",
+      "description": "おみくじで今日の運勢を引く"
+    }
+  ],
+  "events": [],
+  "config_schema": {}
+}

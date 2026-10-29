@@ -1,0 +1,23 @@
+{
+  "$schema": "https://botos.rds9.net/schemas/plugin.v1.json",
+  "id": "botos.standard.dice",
+  "name": "Dice",
+  "version": "0.1.0",
+  "description": "6面ダイスを振る標準プラグイン",
+  "type": "blockly",
+  "is_public": true,
+  "entrypoint": {
+    "engine": "blockly",
+    "workspace": {},
+    "generated_code": "import random\n\nasync def on_command_dice(ctx):\n    r = random.randint(1, 6)\n    await ctx.reply(str(r), ephemeral=True)\n"
+  },
+  "permissions": [],
+  "commands": [
+    {
+      "name": "dice",
+      "description": "6面ダイスを振る"
+    }
+  ],
+  "events": [],
+  "config_schema": {}
+}
