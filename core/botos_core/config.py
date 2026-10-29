@@ -15,7 +15,7 @@ class CoreSettings(BaseSettings):
 
     discord_bot_token: str = ""
     database_url: str = "sqlite+aiosqlite:///data/botos.db"
-    sync_global_commands_on_ready: bool = True
+    sync_global_commands_on_ready: bool = False
 
     @field_validator("discord_bot_token")
     @classmethod

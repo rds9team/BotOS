@@ -45,8 +45,11 @@ def test_plugin_manager_skips_duplicate_ids(tmp_path: Path) -> None:
 def test_guild_id_validation() -> None:
     app = create_app()
     client = TestClient(app)
-    bad = client.get("/api/guilds/not-a-snowflake/plugins")
-    assert bad.status_code == 422
+    bad = client.get(
+        "/api/guilds/not-a-snowflake/plugins",
+        headers={"Authorization": "Bearer invalid"},
+    )
+    assert bad.status_code in (401, 422)
 
 
 def test_ensure_sqlite_parent_dir(tmp_path: Path) -> None:

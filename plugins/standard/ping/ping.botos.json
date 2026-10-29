@@ -9,7 +9,7 @@
   "entrypoint": {
     "engine": "blockly",
     "workspace": {},
-    "generated_code": ""
+    "generated_code": "async def on_command_ping(ctx):\n    await ctx.reply('pong', ephemeral=True)\n"
   },
   "permissions": [],
   "commands": [
