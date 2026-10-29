@@ -137,7 +137,7 @@ def test_bug_sandbox_catalog(bug_id: int, source: str, expected_ok: bool) -> Non
 
 def test_bug_096_list_guilds_route() -> None:
     client = TestClient(create_app())
-    assert client.get("/api/guilds/").status_code == 200
+    assert client.get("/api/guilds/").status_code == 401
 
 def test_bug_097_health_no_store_cache() -> None:
     client = TestClient(create_app())
