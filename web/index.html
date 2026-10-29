@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BotOS Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">
+        <span class="brand-mark">BotOS</span>
+        <span class="brand-sub">サーバー管理ダッシュボード</span>
+      </a>
+      <div id="user-chip" class="user-chip" hidden></div>
+    </header>
+
+    <main class="page">
+      <section id="auth-gate" hidden>
+        <h1>Discord でログイン</h1>
+        <p>
+          管理しているサーバーの一覧と Bot の導入状況を表示するには、
+          Discord アカウントでのログインが必要です。
+        </p>
+        <button id="login-btn" class="btn btn-primary">Discord でログイン</button>
+        <p id="login-error" class="error" hidden></p>
+      </section>
+
+      <section id="dash" hidden>
+        <div class="dash-head">
+          <h1>あなたのサーバー</h1>
+          <button id="reload-btn" class="btn btn-ghost">再読み込み</button>
+        </div>
+        <p id="guild-summary" class="muted"></p>
+        <div id="guild-grid" class="guild-grid" aria-live="polite"></div>
+        <p id="dash-error" class="error" hidden></p>
+      </section>
+
+      <section id="loading" class="loading" hidden>
+        <div class="spinner" role="status" aria-label="読み込み中"></div>
+      </section>
+    </main>
+
+    <dialog id="plugin-dialog" class="plugin-dialog">
+      <form method="dialog">
+        <h2 id="plugin-dialog-title">プラグイン一覧</h2>
+        <ul id="plugin-list" class="plugin-list"></ul>
+        <div class="dialog-actions">
+          <button class="btn btn-ghost" value="close">閉じる</button>
+        </div>
+      </form>
+    </dialog>
+
+    <footer class="footer">
+      <span>
+        API: <span id="api-base">auto</span> <span id="mock-badge" class="badge" hidden>MOCK</span>
+      </span>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

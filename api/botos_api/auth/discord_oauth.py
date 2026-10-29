@@ -32,24 +32,34 @@ def build_authorize_url(*, state: str) -> str:
     return f"https://discord.com/oauth2/authorize?{urlencode(params)}"
 
 
-def create_oauth_state() -> str:
+def create_oauth_state(kind: str = "api") -> str:
+    if kind not in {"api", "web"}:
+        msg = f"invalid oauth state kind: {kind}"
+        raise ValueError(msg)
     settings = load_settings()
     now = datetime.now(tz=UTC)
     payload = {
         "purpose": "oauth_state",
+        "kind": kind,
         "exp": int((now + timedelta(minutes=10)).timestamp()),
         "iat": int(now.timestamp()),
     }
     return jwt.encode(payload, settings.jwt_secret, algorithm="HS256")
 
 
-def verify_oauth_state(state: str) -> bool:
+def state_kind(state: str) -> str:
     settings = load_settings()
     try:
         payload = jwt.decode(state, settings.jwt_secret, algorithms=["HS256"])
     except InvalidTokenError:
-        return False
-    return payload.get("purpose") == "oauth_state"
+        return ""
+    if payload.get("purpose") != "oauth_state":
+        return ""
+    return str(payload.get("kind", "api"))
+
+
+def verify_oauth_state(state: str) -> bool:
+    return bool(state_kind(state))
 
 
 async def exchange_code(code: str) -> dict[str, Any]:

@@ -7,7 +7,9 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.engine import make_url
 
 from botos_api.auth import router as auth_router
@@ -52,7 +54,19 @@ async def lifespan(app: FastAPI):
 
 
 def create_app() -> FastAPI:
+    from botos_api.config import load_settings
+
+    settings = load_settings()
     app = FastAPI(title="BotOS API", version="0.0.0", lifespan=lifespan)
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins,
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type"],
+    )
+    app.state.botos_settings = settings
 
     @app.middleware("http")
     async def security_headers(request: Request, call_next):
@@ -69,6 +83,12 @@ def create_app() -> FastAPI:
     app.include_router(health.router)
     app.include_router(auth_router)
     app.include_router(guilds.router)
+
+    from botos_api.repo_root import repo_root
+
+    web_dir = repo_root() / "web"
+    if web_dir.is_dir():
+        app.mount("/", StaticFiles(directory=web_dir, html=True), name="web")
     return app
 
 

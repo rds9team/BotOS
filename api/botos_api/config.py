@@ -1,5 +1,7 @@
 """API settings from environment."""
 
+import json
+
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -22,6 +24,18 @@ class ApiSettings(BaseSettings):
     discord_client_secret: str = ""
     discord_redirect_uri: str = "http://localhost:8000/api/auth/discord/callback"
     jwt_expires_minutes: int = Field(default=60 * 24 * 7, ge=5, le=60 * 24 * 30)
+    botos_frontend_url: str = "http://localhost:8000"
+    cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:8000", "http://localhost:3000"])
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def _parse_cors_origins(cls, value: object) -> object:
+        if isinstance(value, str):
+            parsed = json.loads(value)
+            if not isinstance(parsed, list) or not all(isinstance(o, str) for o in parsed):
+                raise ValueError("CORS_ORIGINS must be a JSON array of strings")
+            return parsed
+        return value
 
     @field_validator("database_url")
     @classmethod
